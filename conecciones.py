@@ -1,17 +1,16 @@
-# Base de Datos
-
 import sqlite3
+
+# Base de Datos
 
 class Conexion():
     def __init__(self):
         self.db = 'consultorio.db'
-        self.cursor = ''
 
-    def consultar(self, sql,parametros=()):
-        conn = sqlite3.connect(self.db) # Si la DB no existe la crea
+    def consultar(self, sql, parametros=()):
+        conn = sqlite3.connect('consultorio.db')
         cursor = conn.cursor()
         try:
-            resultado = cursor.execute(sql, parametros) # 'SELECT dni FROM perfil'
+            resultado = cursor.execute(sql, parametros) 
             conn.commit()
             return resultado
         except sqlite3.OperationalError:
@@ -19,6 +18,14 @@ class Conexion():
             resultado = cursor.execute(sql, parametros) 
             conn.commit()
             return resultado
+
+    def guardar_perfil(self, sql, parametros):
+        conn = sqlite3.connect('consultorio.db')
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO perfil VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)', (dni, 
+                                                    apellido, nombre, titulo, abreviatura,
+                                                    matricula_nac, matricula_prov, telefono, mail))
+        
 
     def crear_db(self, cursor):
         cursor.execute('CREATE TABLE perfil (dni INT PRIMARY KEY,\
