@@ -9,6 +9,7 @@ from conecciones import Conexion
 class Perfil(WinSecundaria, Estilos):
     def __init__(self, master, titulo):
         super().__init__(master, titulo)
+        self.query=Conexion()
         # Labels
         label_titulo = ttk.Label(self.master, 
                 text='Debe completar todos los campos para configurar su perfil', 
@@ -66,7 +67,7 @@ class Perfil(WinSecundaria, Estilos):
         self.caja_email = ttk.Entry(self.master)
         self.caja_email.place(x=x_entry, y=500, width=150, height=25)
 
-        boton_guardar = ttk.Button(self.master, text='Guardar', command = self.guardar)
+        boton_guardar = ttk.Button(self.master, text='Guardar', command = self.capturar_datos)
         boton_guardar.place(x=x_label+40, y=550)
         boton_cerrar = ttk.Button(self.master, text='Cerrar', command = self.cerrar)
         boton_cerrar.place(x=x_entry+35, y=550)
@@ -77,27 +78,36 @@ class Perfil(WinSecundaria, Estilos):
     def cerrar(self):
         self.master.destroy()
 
-    def guardar(self):
+    def capturar_datos(self):
         apellido = self.caja_apellido.get()
         nombre = self.caja_nombre.get()
-        dni = int(self.caja_dni.get())
+        try:
+            dni = int(self.caja_dni.get())
+        except ValueError:
+            dni = 0
         titulo = self.caja_titulo.get()
         abreviatura = self.caja_abreviatura.get()
-        matricula_nac = int(self.caja_nacional.get())
-        matricula_prov = int(self.caja_provincial.get())
-        telefono = int(self.caja_telefono.get())
+        try:
+            matricula_nac = int(self.caja_nacional.get())
+        except ValueError:
+            matricula_nac = 0
+        try:
+            matricula_prov = int(self.caja_provincial.get())
+        except ValueError:
+            matricula_prov = 0
+        try:
+            telefono = int(self.caja_telefono.get())
+        except ValueError:
+            telefono = 0
         mail = self.caja_email.get()
-        if len(apellido) == 0 or len(nombre) == 0 or dni == 0 \
+        if len(apellido) == 0 or len(nombre) == 0 or dni == 0\
         or matricula_nac == 0 or matricula_prov == 0 or telefono == 0:
             messagebox.showwarning(
                         title='Advertencia',
-                        message='Todos los campos deben estar completos'
+                        message='Hay campos obligatorios que están vacíos'
                         )       
         else:
-            sql = 'INSERT INTO perfil VALUES(?,?,?,?,?,?,?,?,?)'
-            parametros = (dni, apellido, nombre, titulo, abreviatura, 
-                          matricula_nac, matricula_prov, telefono, mail)
-            Conexion.guardar_perfil(sql, parametros)
+            self.query.guardarPerfil(dni,apellido,nombre)
             print('Llegamos hasta acá')
             messagebox.showinfo(
                         title="Datos Guardados",
@@ -105,6 +115,6 @@ class Perfil(WinSecundaria, Estilos):
                         )
             self.cerrar()
 
-    # def cerrar(self):
-    #     self.master.destroy()
+# def cerrar(self):
+#     self.master.destroy()
 

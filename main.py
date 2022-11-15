@@ -70,7 +70,7 @@ if __name__=="__main__":
     app = WinMain(root)
     
 query = conecciones.Conexion()
-password = query.consultar('SELECT dni FROM perfil')
+password = query.consultar_pass()
 clave = password.fetchall()
 
 if len(clave) == 0:
