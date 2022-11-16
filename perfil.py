@@ -119,8 +119,4 @@ class Perfil(WinSecundaria, Estilos):
                                 title="Datos Guardados",
                                 message="Los datos se guardaron correctamente."
                                 )
-            self.cerrar()
-
-# def cerrar(self):
-#     self.master.destroy()
-
+            self.master.destroy()
