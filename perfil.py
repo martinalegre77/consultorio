@@ -67,7 +67,7 @@ class Perfil(WinSecundaria, Estilos):
         self.caja_email = ttk.Entry(self.master)
         self.caja_email.place(x=x_entry, y=500, width=150, height=25)
 
-        boton_guardar = ttk.Button(self.master, text='Guardar', command = self.capturar_datos)
+        boton_guardar = ttk.Button(self.master, text='Guardar', command = self.guardar)
         boton_guardar.place(x=x_label+40, y=550)
         boton_cerrar = ttk.Button(self.master, text='Cerrar', command = self.cerrar)
         boton_cerrar.place(x=x_entry+35, y=550)
@@ -76,9 +76,15 @@ class Perfil(WinSecundaria, Estilos):
         self.master.grab_set()
 
     def cerrar(self):
-        self.master.destroy()
+        if messagebox.askokcancel(
+                        title='Advertencia',
+                        message='¿Confirma que desea cerrar la ventana?'
+                        ):
+            self.master.destroy()
+        else:
+            pass
 
-    def capturar_datos(self):
+    def guardar(self):
         apellido = self.caja_apellido.get()
         nombre = self.caja_nombre.get()
         try:
@@ -107,12 +113,12 @@ class Perfil(WinSecundaria, Estilos):
                         message='Hay campos obligatorios que están vacíos'
                         )       
         else:
-            self.query.guardarPerfil(dni,apellido,nombre)
-            print('Llegamos hasta acá')
+            self.query.guardar_perfil(dni, apellido, nombre, titulo, abreviatura,
+                                     matricula_nac, matricula_prov, telefono, mail)
             messagebox.showinfo(
-                        title="Datos Guardados",
-                        message="Los datos se guardaron correctamente."
-                        )
+                                title="Datos Guardados",
+                                message="Los datos se guardaron correctamente."
+                                )
             self.cerrar()
 
 # def cerrar(self):

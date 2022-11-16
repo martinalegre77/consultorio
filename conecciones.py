@@ -23,20 +23,12 @@ class Conexion():
             resultado = self.consultar(sql)
             return resultado
 
-    def guardarPerfil(self,dni,apellido,nombre):
-        print(dni,apellido,nombre)
-
-
-
-    
-
-    # def guardar_perfil(self, dni,apellido,nombre,titulo):
-    #     print(dni,apellido,nombre,titulo) #,abreviatura,matricula_nac,
-                                # matricula_prov,telefono,mail)
-        # sql = 'INSERT INTO perfil VALUES'
-        # parametros = (dni, apellido, nombre, titulo, abreviatura,
-        #             matricula_nac, matricula_prov, telefono, mail)
-        # self.consultar(sql, parametros)
+    def guardar_perfil(self, dni, apellido, nombre, titulo, abreviatura,
+                        matricula_nac, matricula_prov, telefono, mail):
+        sql = 'INSERT INTO perfil VALUES(?,?,?,?,?,?,?,?,?)'
+        parametros = (dni, apellido, nombre, titulo, abreviatura,
+                     matricula_nac, matricula_prov, telefono, mail)
+        self.consultar(sql, parametros)
         
 
     def crear_db(self):
