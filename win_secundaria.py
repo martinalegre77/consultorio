@@ -1,4 +1,3 @@
-
 from tkinter import ttk
 import tkinter
 from estilos import Estilos
@@ -22,4 +21,5 @@ class WinSecundaria(Estilos):
                                         anchor = 5, 
                                         padding = 2, 
                                         width=20, 
-                                        height=25)
+                                        height=25)      
+        self.master.geometry("+300+30")

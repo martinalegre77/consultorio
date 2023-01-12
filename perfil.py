@@ -11,6 +11,7 @@ class Perfil(WinSecundaria, Estilos):
         super().__init__(master, titulo)
         self.query=Conexion()
         # Labels
+        self.master.resizable(0,0) 
         label_titulo = ttk.Label(self.master, 
                 text='Debe completar todos los campos para configurar su perfil', 
                 background=self.color_principal, 

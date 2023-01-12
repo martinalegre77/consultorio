@@ -1,7 +1,5 @@
 import sqlite3
 
-# Base de Datos
-
 class Conexion():
     def __init__(self):
         self.db = 'consultorio.db'
@@ -59,4 +57,3 @@ class Conexion():
                                     tema_sesion TEXT, evaluacion TEXT,\
                                     tratamiento TEXT, otras_anot TEXT)'
         self.consultar(sql)
-               
