@@ -9,7 +9,7 @@ class WinSecundaria(Estilos):
         super().__init__()
         self.master = master
         self.master = tkinter.Toplevel()
-        self.master.iconbitmap('./iconos/icono.ico')
+        self.master.iconbitmap('./iconos/ico2.ico')
         self.master.title(titulo)
         self.master.config(width=700, height=600, background=self.color_principal)
         self.master.style = ttk.Style()
