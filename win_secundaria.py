@@ -5,15 +5,15 @@ from estilos import Estilos
 # Ventanas Secundarias
 
 class WinSecundaria(Estilos):
-    def __init__(self, master, titulo):
+    def __init__(self, root, titulo):
         super().__init__()
-        self.master = master
-        self.master = tkinter.Toplevel()
-        self.master.iconbitmap('./iconos/ico2.ico')
-        self.master.title(titulo)
-        self.master.config(width=700, height=600, background=self.color_principal)
-        self.master.style = ttk.Style()
-        self.master.style.configure("TLabel", foreground="gray15", 
+        self.root = root
+        self.root = tkinter.Toplevel()
+        self.root.iconbitmap('./iconos/ico2.ico')
+        self.root.title(titulo)
+        self.root.config(width=700, height=600, background=self.color_principal)
+        self.root.style = ttk.Style()
+        self.root.style.configure("TLabel", foreground="gray15", 
                                         background = 'lightblue', 
                                         font = "Arial 11",
                                         relief = 'ridge',   
@@ -22,4 +22,4 @@ class WinSecundaria(Estilos):
                                         padding = 2, 
                                         width=20, 
                                         height=25)      
-        self.master.geometry("+300+30")
+        self.root.geometry("+300+30")

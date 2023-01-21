@@ -35,25 +35,24 @@ class Conexion():
                                     abrev_titulo TEXT, mat_nac INT,\
                                     mat_prov INT NOT NULL, telefono INT, mail TEXT)'
         self.consultar(sql)
-        sql = 'CREATE TABLE paciente (dni_pac INT PRIMARY KEY, apellido_pac TEXT NOT NULL,\
-                                        nombre_pac TEXT NOT NULL, obra_social_pac TEXT,\
-                                        telefono_pac INT, mail_pac TEXT)'
+        sql = 'CREATE TABLE paciente (dni_pac INTEGER NOT NULL, apellido_pac TEXT NOT NULL, nombre_pac	TEXT NOT NULL,\
+                            obra_social_pac	TEXT, telefono_pac INT NOT NULL, mail_pac TEXT, PRIMARY KEY(dni_pac))'
         self.consultar(sql)                                         
-        sql = 'CREATE TABLE obras_sociales (id_os INT PRIMARY KEY, nombre_os TEXT NOT NULL,\
-                                            nom_completo TEXT)'
+        sql = 'CREATE TABLE obras_sociales (id_os INTEGER, nombre_os TEXT NOT NULL, monto TEXT,\
+                            PRIMARY KEY(id_os AUTOINCREMENT));'
         self.consultar(sql)
-        sql = 'CREATE TABLE consultorios (id_cons INT PRIMARY KEY, nombre_cons TEXT,\
-                                          direccion_cons TEXT, telefono_cons INT)'
+        sql = 'CREATE TABLE consultorios (id_cons INTEGER NOT NULL, nombre_cons	TEXT NOT NULL, \
+                            direccion_cons TEXT NOT NULL, telefono_cons	INT, PRIMARY KEY(id_cons AUTOINCREMENT));'
         self.consultar(sql)
         sql = 'CREATE TABLE cobros (id_cobro INT PRIMARY KEY, dni_pac INT NOT NULL,\
-                                   nro_sesion INT, monto INT, fecha_cobro TEXT, tipo TEXT)'
+                            nro_sesion INT, monto INT, fecha_cobro TEXT, tipo TEXT)'
         self.consultar(sql)
-        sql = 'CREATE TABLE turnos (nro_turno INT PRIMARY KEY, fecha_turno TEXT NOT NULL,\
-                                    horario_turno TEXT NOT NULL, apellido_pac TEXT NOT NULL,\
-                                    telefono_pac INT NOT NULL, mail_pac TEXT)'
+        sql = 'CREATE TABLE turnos (nro_turno INTEGER NOT NULL, fecha_turno TEXT NOT NULL, horario_turno TEXT NOT NULL, \
+                            apellido_pac TEXT NOT NULL, dni_pac INTEGER, nom_consultorio TEXT NOT NULL, \
+                            PRIMARY KEY(nro_turno AUTOINCREMENT), FOREIGN KEY(dni_pac) REFERENCES paciente(dni_pac))'
         self.consultar(sql)
         sql = 'CREATE TABLE sesiones (nro_sesion INT PRIMARY KEY, dni_pac INT NOT NULL,\
-                                    horario_sesion TEXT NOT NULL, motivo TEXT,\
-                                    tema_sesion TEXT, evaluacion TEXT,\
-                                    tratamiento TEXT, otras_anot TEXT)'
+                            horario_sesion TEXT NOT NULL, motivo TEXT,\
+                            tema_sesion TEXT, evaluacion TEXT,\
+                            tratamiento TEXT, otras_anot TEXT)'
         self.consultar(sql)

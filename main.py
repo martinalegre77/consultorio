@@ -3,11 +3,12 @@ from tkinter import CENTER, ttk
 from PIL import ImageTk, Image
 from tkinter import messagebox
 from turtle import bgcolor
+from interaccion import *
 import conecciones
 from estilos import Estilos
 from login import Login
 from perfil import Perfil
-import calendar
+
 
 class WinMain(Estilos):
     def __init__(self, root):
@@ -37,13 +38,16 @@ class WinMain(Estilos):
         label_anillado = tk.Label(root, image=self.anillado, background=self.color_secundario, relief = 'flat')
         label_anillado.place_configure(x=0, y=15)
         # Botones
-        self.boton_ingresar = ttk.Button(root, text='INGRESO', command=self.ingresar)
+        self.boton_ingresar = ttk.Button(root, text='INGRESO', command=self.ingresar, cursor='hand2')
         self.boton_ingresar.place(relx=.85, y=555, width=85, height=25)
-        boton_salir = ttk.Button(root, text='SALIR', command=self.salir)
+        boton_salir = ttk.Button(root, text='SALIR', command=self.salir, cursor='hand2')
         boton_salir.place(relx=.85, y=585, width=85, height=25)
 
     def ingresar(self):
-        login = Login('win_login', 'Mi Consultorio')   
+        login = Login('win_login', 'Mi Consultorio')
+
+    def perfil(self):
+        edit_perfil = Perfil('win_perfil', 'Configuración del Perfil')
 
     def salir(self):
         if messagebox.askokcancel(
@@ -65,32 +69,41 @@ class WinMain(Estilos):
                                 width=333, height=50)
         self.boton_ingresar.destroy()
         #Botones - Menú
-        btn_agenda = ttk.Button(root , text='AGENDA')
+        btn_agenda = ttk.Button(root, text='AGENDA', command=self.agenda, cursor='hand2')
         btn_agenda.place(x=75, y=50, width=110, height=30)
-        btn_paciente = ttk.Button(root , text='PACIENTES')
+        btn_paciente = ttk.Button(root, text='PACIENTES', command=self.pacientes, cursor='hand2')
         btn_paciente.place(x=75, y=120, width=110, height=30)
-        btn_obras_soc = ttk.Button(root , text='OBRAS SOCIALES')
+        btn_obras_soc = ttk.Button(root, text='OBRAS SOCIALES', command=self.osociales, cursor='hand2')
         btn_obras_soc.place(x=75, y=190, width=110, height=30)
-        btn_consultorio = ttk.Button(root , text='CONSULTORIOS')
+        btn_consultorio = ttk.Button(root , text='CONSULTORIOS', command=self.consultorios, cursor='hand2')
         btn_consultorio.place(x=75, y=260, width=110, height=30)
-        btn_pago = ttk.Button(root , text='PAGOS')
+        btn_pago = ttk.Button(root, text='PAGOS', command=self.pagos, cursor='hand2')
         btn_pago.place(x=75, y=330, width=110, height=30)
-        btn_turno = ttk.Button(root , text='TURNOS')
+        btn_turno = ttk.Button(root, text='TURNOS', command=self.turnos, cursor='hand2')
         btn_turno.place(x=75, y=400, width=110, height=30)
-        btn_perfil = ttk.Button(root , text='PERFIL')
+        btn_perfil = ttk.Button(root, text='PERFIL', command=self.perfil, cursor='hand2')
         btn_perfil.place(x=75, y=515, width=110, height=30)
-        btn_contrasena = ttk.Button(root , text='MODIFICAR PASS')
+        btn_contrasena = ttk.Button(root, text='MODIFICAR PASS')
         btn_contrasena.place(x=75, y=585, width=110, height=30)
 
-        self.agenda()
-
+    
     def agenda(self):
-        mes = calendar.month(2023, 2, w=6, l=3)
-        etiqueta_agenda = ttk.Label(root, text=mes, font= 'Arial 10', 
-                            background = self.color_secundario,
-                            relief = 'sunken')
-        etiqueta_agenda.place(x=240, y=50,  width=600, height=530)
-        
+        frame_agenda = Agenda(root)
+
+    def pacientes(self):
+        frame_pacientes = Pacientes(root)
+
+    def osociales(self):
+        frame_osociales = Osociales(root)
+
+    def consultorios(self):
+        frame_consultorios = Consultorios(root)
+
+    def pagos(self):
+        frame_pagos = Pagos(root)
+
+    def turnos(self):
+        frame_turnos = Turnos(root)
 
 if __name__=="__main__":
     root = tk.Tk()
