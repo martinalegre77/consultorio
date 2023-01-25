@@ -63,7 +63,7 @@ class WinMain(Estilos):
                     background = self.color_principal, 
                     font = self.letra_extra, 
                     justify = 'center',
-                    relief = 'flat'
+                    relief = 'flat',
                     )
         etiqueta_principal.place_configure(relx=0.6, y=25, anchor = CENTER, 
                                 width=333, height=50)
@@ -77,8 +77,8 @@ class WinMain(Estilos):
         btn_obras_soc.place(x=75, y=190, width=110, height=30)
         btn_consultorio = ttk.Button(root , text='CONSULTORIOS', command=self.consultorios, cursor='hand2')
         btn_consultorio.place(x=75, y=260, width=110, height=30)
-        btn_pago = ttk.Button(root, text='PAGOS', command=self.pagos, cursor='hand2')
-        btn_pago.place(x=75, y=330, width=110, height=30)
+        btn_cobro = ttk.Button(root, text='COBROS', command=self.cobros, cursor='hand2')
+        btn_cobro.place(x=75, y=330, width=110, height=30)
         btn_turno = ttk.Button(root, text='TURNOS', command=self.turnos, cursor='hand2')
         btn_turno.place(x=75, y=400, width=110, height=30)
         btn_perfil = ttk.Button(root, text='PERFIL', command=self.perfil, cursor='hand2')
@@ -99,8 +99,8 @@ class WinMain(Estilos):
     def consultorios(self):
         frame_consultorios = Consultorios(root)
 
-    def pagos(self):
-        frame_pagos = Pagos(root)
+    def cobros(self):
+        frame_cobros = Cobros(root)
 
     def turnos(self):
         frame_turnos = Turnos(root)
@@ -125,6 +125,8 @@ else:
 
 
 root.mainloop()
+
+# Conexion.cerrar_conexion()
 
 # root.destroy
 # root.quit
