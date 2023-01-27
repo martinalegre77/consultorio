@@ -14,7 +14,6 @@ class WinSecundaria(Estilos):
         self.root.config(width=700, height=600, background=self.color_principal)
         self.root.style = ttk.Style()
         self.root.style.configure("TLabel", foreground="gray15", 
-                                        background = 'lightblue', 
                                         font = "Arial 11",
                                         relief = 'ridge',   
                                         bordercolor = 'black', 

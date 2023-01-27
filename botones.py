@@ -1,4 +1,5 @@
 
+from calendar import Calendar
 from datetime import datetime
 import tkinter as tk
 from tkinter import ttk
@@ -15,14 +16,12 @@ class Botones(Estilos):
         self.root.resizable(0,0)
         self.root.focus()
         self.root.style = ttk.Style()
-        self.root.geometry("+450+80")
+        self.root.geometry("660x570+410+60")
         self.root.grab_set()
         self.root.iconbitmap('./iconos/favicon.ico')
         self.root.title(titulo)
-        self.root.config(width=600, height=550, background=self.color_principal)
-        self.root.style = ttk.Style()
+        self.root.config(background=self.color_principal)
         self.root.style.configure("TLabel", foreground="gray15", 
-                                        background = 'lightblue', 
                                         font = "Arial 11",
                                         relief = 'flat',   
                                         bordercolor = 'black', 
@@ -34,33 +33,34 @@ class Botones(Estilos):
 
     def mostrar_tabla(self, titulo2, columnas, texto_columnas, ancho_columnas, sql):
         titulo2 = ttk.Label(self.root, text=titulo2, 
-                    background = 'lightcyan2', 
-                    font = 'Arial 18', 
+                    background = self.color_principal, 
+                    font = 'Arial 18 bold', 
                     justify = 'center',
-                    relief='flat')
+                    relief='flat',
+                    width=400)
         titulo2.pack()
-        self.barra = ttk.Scrollbar(self.root)
-        self.barra.pack(side=tk.RIGHT, fill=tk.Y)
-        self.tabla = ttk.Treeview(self.root,
-            yscrollcommand=self.barra.set,
+        frame_treeview = ttk.Frame(self.root)
+        frame_treeview.pack()
+        self.scrollbar = ttk.Scrollbar(frame_treeview, orient=tk.VERTICAL)
+        self.tabla = ttk.Treeview(frame_treeview,
+            yscrollcommand=self.scrollbar.set,
             columns=columnas, 
             show='headings')
+        self.scrollbar.config(command=self.tabla.yview)
+        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.tabla.pack()
         
         for i in range(len(texto_columnas)):
             self.tabla.heading(columnas[i], text=texto_columnas[i])
             self.tabla.column(columnas[i], width=ancho_columnas[i], anchor='center')
-
-        self.tabla.pack()
-
-        self.barra.config(command=self.tabla.yview)
 
         q = self.query.consultar(sql)
 
         for linea in q.fetchall():
             self.tabla.insert('', tk.END, values=linea)
 
-        self.boton_cerrar = ttk.Button(self.root, text='Cerrar', command = self.root.destroy, )
-        self.boton_cerrar.place(x=500, y=500, width=85, height=25)
+        self.boton_cerrar = ttk.Button(self.root, text='CERRAR', command = self.root.destroy, )
+        self.boton_cerrar.place(x=540, y=520, width=85, height=25)
 
 class Agenda(Botones):
     def __init__(self, root, titulo):
@@ -133,17 +133,63 @@ class Turnos(Botones):
                 WHERE turnos.fecha_turno < DATE("now")'
         self.mostrar_tabla(titulo2, columnas, texto_columnas, ancho_columnas, sql)
 
-        self.anio = int(datetime.now().year)
-        self.mes = int(datetime.now().month)
-        self.dia = int(datetime.now().day)
+# ------Interacción Usuario-------------------------------------------------------
+
+        frame_inf = tk.Frame(self.root, bg=self.color_principal, relief='raise')
+        frame_inf.pack(pady=20)
+        anio = int(datetime.now().year)
+        # mes = int(datetime.now().month)
+        # dia = int(datetime.now().day)
+        lab_cal = ttk.Label(frame_inf)
+        lab_cal.config(background='light cyan', relief='flat', padding=5)
+        lab_cal.grid(row=0, column=0, columnspan=2)
+        self.calendario = DateEntry(lab_cal, background='darkblue',
+                                    foreground='white', borderwidth=2, year=anio)
+        self.calendario.pack()
+
+        label_apellido = ttk.Label(frame_inf, text='Apellido:', background=self.color_principal, relief='flat')
+        label_apellido.grid(row=0, column=2, padx=20, pady=10)
+        self.entry_apellido = ttk.Entry(frame_inf, state='disable')
+        self.entry_apellido.grid(row=0, column=3, padx=10, pady=10)
         
-        self.label_calendar = ttk.Label(self.root, width=50)
-        self.label_calendar.grid(row=1, column=0, rowspan=4)
-        self.label_calendar.config(background='light cyan', relief='flat')
-        self.calendario = DateEntry(self.label_calendar, width=12, background='darkblue',
-                                foreground='white', borderwidth=2, year=self.anio)
-        # self.calendario = DateEntry(self.frame_calendar, bg='darkblue', fg='white', font=('arial', 9 , 'bold'), year=self.anio)
-        # self.calendario = Calendar(self.frame_turnos, selectmode='day', 
-        #                                             year=self.anio, month=self.mes, day=self.dia, 
-        #                                             date_pattern='dd/mm/y', font=('arial', 9 , 'bold'))
-        self.calendario.pack(padx=10, pady=10)
+        label_nombre = ttk.Label(frame_inf, text='Nombre/s:', background=self.color_principal, relief='flat')
+        label_nombre.grid(row=1, column=2,padx=20, pady=10)
+        self.entry_nombre = ttk.Entry(frame_inf, state='disable')
+        self.entry_nombre.grid(row=1, column=3, padx=10, pady=10)
+
+        label_dni = ttk.Label(frame_inf, text='Teléfono:', background=self.color_principal, relief='flat')
+        label_dni.grid(row=2, column=2, padx=20, pady=10)
+        self.entry_tel = ttk.Entry(frame_inf, state='disable')
+        self.entry_tel.grid(row=2, column=3, padx=10, pady=10)
+        
+        label_titulo = ttk.Label(frame_inf, text='Horario:', background=self.color_principal, relief='flat')
+        label_titulo.grid(row=3, column=2, padx=20, pady=10)
+        self.entry_horario = ttk.Entry(frame_inf, state='disable')
+        self.entry_horario.grid(row=3, column=3, padx=10, pady=10)
+
+        boton_turno = ttk.Button(frame_inf, text='Ingresar turno', 
+                                padding=3, command=self.habilitar, cursor='hand2')
+        boton_turno.grid(row=0, column=4, padx=20, pady=10)
+        boton_guardar_turno = ttk.Button(frame_inf, text='Guardar turno', 
+                                        padding=3, command=self.guardar_turno, cursor='hand2')
+        boton_guardar_turno.grid(row=2, column=4, padx=20, pady=10)
+
+    def habilitar(self):
+        self.entry_apellido.config(state='normal')
+        self.entry_apellido.focus()
+        self.entry_nombre.config(state='normal')
+        self.entry_tel.config(state='normal')
+        self.entry_horario.config(state='normal')
+
+    def guardar_turno(self):
+        apellido_turno = self.entry_apellido.get()
+        nombre_turno = self.entry_nombre.get()
+        telefono_turno = self.entry_tel.get()
+        horario_turno = self.entry_horario.get()
+
+        self.entry_apellido.delete(0, tk.END) 
+        self.entry_nombre.delete(0, tk.END)
+        self.entry_tel.delete(0, tk.END)
+        self.entry_horario.delete(0, tk.END)
+
+        print(apellido_turno, nombre_turno, telefono_turno, horario_turno)
