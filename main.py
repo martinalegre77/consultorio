@@ -3,7 +3,7 @@ from tkinter import CENTER, ttk
 from PIL import ImageTk, Image
 from tkinter import messagebox
 from turtle import bgcolor
-from interaccion import *
+from botones import * # Acá estaba interaccion
 import conecciones
 from estilos import Estilos
 from login import Login
@@ -29,7 +29,6 @@ class WinMain(Estilos):
         self.root.iconbitmap('./iconos/favicon.ico')
         self.query = conecciones.Conexion()
         self.anillado = ImageTk.PhotoImage(Image.open('./imagenes/anillado.png').resize((50,600)))
-        # self.imagen_psico = ImageTk.PhotoImage(Image.open('./imagenes/logo.png').resize((320, 270)))
         # Frames
         frame_principal = tk.Frame(root, bg = self.color_principal)
         frame_principal.place(relwidth=0.82, relheight=1, relx=0.18)
@@ -65,8 +64,11 @@ class WinMain(Estilos):
                     justify = 'center',
                     relief = 'flat',
                     )
-        etiqueta_principal.place_configure(relx=0.6, y=25, anchor = CENTER, 
+        etiqueta_principal.place_configure(relx=0.6, y=75, anchor = CENTER, 
                                 width=333, height=50)
+        self.imagen_psico = ImageTk.PhotoImage(Image.open('./imagenes/logo.png').resize((320, 270)))
+        label_imagen = tk.Label(self.root, image=self.imagen_psico, background=self.color_principal, relief = 'flat')
+        label_imagen.place(relx=0.6, rely=0.5, anchor=CENTER)
         self.boton_ingresar.destroy()
         #Botones - Menú
         btn_agenda = ttk.Button(root, text='AGENDA', command=self.agenda, cursor='hand2')
@@ -86,24 +88,23 @@ class WinMain(Estilos):
         btn_contrasena = ttk.Button(root, text='MODIFICAR PASS')
         btn_contrasena.place(x=75, y=585, width=110, height=30)
 
-    
     def agenda(self):
-        frame_agenda = Agenda(root)
+        frame_agenda = Agenda('win_botones', 'Agenda')
 
     def pacientes(self):
-        frame_pacientes = Pacientes(root)
+        frame_pacientes = Pacientes('win_botones', 'Pacientes')
 
     def osociales(self):
-        frame_osociales = Osociales(root)
+        frame_osociales = Osociales('win_botones', 'O. Sociales')
 
     def consultorios(self):
-        frame_consultorios = Consultorios(root)
+        frame_consultorios = Consultorios('win_botones', 'Consultorios')
 
     def cobros(self):
-        frame_cobros = Cobros(root)
+        frame_cobros = Cobros('win_botones', 'Cobros')
 
     def turnos(self):
-        frame_turnos = Turnos(root)
+        frame_turnos = Turnos('win_botones', 'Turnos')
 
 if __name__=="__main__":
     root = tk.Tk()

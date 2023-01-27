@@ -9,16 +9,25 @@ from tkcalendar import Calendar, DateEntry
 class Contenedor(tk.Frame):
     def __init__(self, root):
         self.query=Conexion()
-        self.frame_cont = tk.Frame(root)
+        self.root = root
+        self.frame_cont = tk.Frame(self.root)
         self.frame_cont.place(x=240, y=50)
         # self.frame_cont.config(width=600, height=530, bg ='lightcyan2', relief='ridge', borderwidth=5)
         self.frame_cont.config(bg ='lightcyan2', relief='ridge', borderwidth=5)
         # 2do frame
-        self.frame_turnos = tk.Frame(root)
-        self.frame_turnos.place(x=260, y=370)
-        self.frame_turnos.config(bg ='light cyan', relief='flat')
+        # self.frame_turnos = tk.Frame(self.root)
+        # self.frame_turnos.place(x=260, y=370)
+        # self.frame_turnos.config(bg ='light cyan', relief='flat')
 
     def mostrar_tabla(self, titulo, columnas, texto_columnas, ancho_columnas, sql):
+
+        for item in self.frame_cont.winfo_children():
+            print(item)
+            item.destroy()
+
+        # for item in self.frame_turnos.winfo_children():
+        #     print(item)
+        #     item.destroy()   
 
         titulo = ttk.Label(self.frame_cont, text=titulo, 
                     background = 'lightcyan2', 
@@ -122,7 +131,7 @@ class Turnos(Contenedor):
         self.dia = int(datetime.now().day)
         
         # --------- FRAME TURNOS -----------------
-        self.label_calendar = ttk.Label(self.frame_turnos, width=50)
+        self.label_calendar = ttk.Label(self.frame_cont, width=50)
         self.label_calendar.grid(row=1, column=0, rowspan=4)
         self.label_calendar.config(background='light cyan', relief='flat')
         self.calendario = DateEntry(self.label_calendar, width=12, background='darkblue',
@@ -133,30 +142,30 @@ class Turnos(Contenedor):
         #                                             date_pattern='dd/mm/y', font=('arial', 9 , 'bold'))
         self.calendario.pack(padx=10, pady=10)
 
-        label_apellido = ttk.Label(self.frame_turnos, text='Apellido:', background='light cyan', relief='flat')
+        label_apellido = ttk.Label(self.frame_cont, text='Apellido:', background='light cyan', relief='flat')
         label_apellido.grid(row=1, column=2, padx=20, pady=10)
-        self.entry_apellido = ttk.Entry(self.frame_turnos, state='disable')
+        self.entry_apellido = ttk.Entry(self.frame_cont, state='disable')
         self.entry_apellido.grid(row=1, column=3, padx=10, pady=10)
         
-        label_nombre = ttk.Label(self.frame_turnos, text='Nombre/s:', background='light cyan', relief='flat')
+        label_nombre = ttk.Label(self.frame_cont, text='Nombre/s:', background='light cyan', relief='flat')
         label_nombre.grid(row=2, column=2,padx=20, pady=10)
-        self.entry_nombre = ttk.Entry(self.frame_turnos, state='disable')
+        self.entry_nombre = ttk.Entry(self.frame_cont, state='disable')
         self.entry_nombre.grid(row=2, column=3, padx=10, pady=10)
 
-        label_dni = ttk.Label(self.frame_turnos, text='Teléfono:', background='light cyan', relief='flat')
+        label_dni = ttk.Label(self.frame_cont, text='Teléfono:', background='light cyan', relief='flat')
         label_dni.grid(row=3, column=2, padx=20, pady=10)
-        self.entry_tel = ttk.Entry(self.frame_turnos, state='disable')
+        self.entry_tel = ttk.Entry(self.frame_cont, state='disable')
         self.entry_tel.grid(row=3, column=3, padx=10, pady=10)
         
-        label_titulo = ttk.Label(self.frame_turnos, text='Horario:', background='light cyan', relief='flat')
+        label_titulo = ttk.Label(self.frame_cont, text='Horario:', background='light cyan', relief='flat')
         label_titulo.grid(row=4, column=2, padx=20, pady=10)
-        self.entry_horario = ttk.Entry(self.frame_turnos, state='disable')
+        self.entry_horario = ttk.Entry(self.frame_cont, state='disable')
         self.entry_horario.grid(row=4, column=3, padx=10, pady=10)
 
-        boton_turno = ttk.Button(self.frame_turnos, text='Ingresar turno', 
+        boton_turno = ttk.Button(self.frame_cont, text='Ingresar turno', 
                                 padding=3, command=self.habilitar, cursor='hand2')
         boton_turno.grid(row=1, column=4, padx=20, pady=10)
-        boton_guardar_turno = ttk.Button(self.frame_turnos, text='Guardar turno', 
+        boton_guardar_turno = ttk.Button(self.frame_cont, text='Guardar turno', 
                                         padding=3, command=self.guardar_turno, cursor='hand2')
         boton_guardar_turno.grid(row=3, column=4, padx=20, pady=10)
 
