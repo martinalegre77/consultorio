@@ -11,8 +11,8 @@ class Conexion():
             conn.commit()
             return resultado
 
-    def cerrar_conexion(self):
-        Conexion.close()
+    # def cerrar_conexion(self):
+    #     Conexion.close()
 
     def consultar_pass(self):
         sql = 'SELECT dni FROM perfil'

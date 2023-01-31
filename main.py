@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import CENTER, ttk
+from tkinter import CENTER
 from PIL import ImageTk, Image
 from tkinter import messagebox
 from turtle import bgcolor
@@ -9,22 +9,21 @@ from estilos import Estilos
 from login import Login
 from perfil import Perfil
 
-
 class WinMain(Estilos):
     def __init__(self, root):
         super().__init__()
         self.root = root
         root.resizable(0,0)
-
-        wtotal = root.winfo_screenwidth()
-        htotal = root.winfo_screenheight()
+        # wtotal = root.winfo_screenwidth()
+        # htotal = root.winfo_screenheight()
         wventana = 900
         hventana = 630
-        pwidth = round(wtotal/2-wventana/2)
-        pheight = round(htotal/2-(hventana)/2)
-        
-        self.root.geometry(str(wventana)+"x"+str(hventana)+"+"+str(pwidth)+"+"+str(pheight-30))
-        
+        # pwidth = round(wtotal/2-wventana/2)
+        # pheight = round(htotal/2-(hventana)/2)
+        # self.root.geometry(str(wventana)+"x"+str(hventana)+"+"+str(pwidth)+"+"+str(pheight-30))
+        vx, vy = self.valoresxy(self.root, wventana, hventana)
+        # self.root.geometry(str(wventana)+"x"+str(hventana)+"+"+xy)
+        self.root.geometry(str(wventana)+"x"+str(hventana)+"+"+str(vx)+"+"+str(vy-30))
         self.root.title('Mi Consultorio')
         self.root.iconbitmap('./iconos/favicon.ico')
         self.query = conecciones.Conexion()
@@ -34,12 +33,12 @@ class WinMain(Estilos):
         frame_principal.place(relwidth=0.82, relheight=1, relx=0.18)
         barra_menu = tk.Frame(root, bg = self.color_secundario)
         barra_menu.place(relwidth=0.22, relheight=1)
-        label_anillado = tk.Label(root, image=self.anillado, background=self.color_secundario, relief = 'flat')
+        label_anillado = ttk.Label(root, image=self.anillado, background=self.color_secundario, relief = 'flat')
         label_anillado.place_configure(x=0, y=15)
         # Botones
-        self.boton_ingresar = ttk.Button(root, text='INGRESO', command=self.ingresar, cursor='hand2')
+        self.boton_ingresar = ttk.Button(root, text='Ingresar', command=self.ingresar, cursor='hand2')
         self.boton_ingresar.place(relx=.85, y=555, width=85, height=25)
-        boton_salir = ttk.Button(root, text='SALIR', command=self.salir, cursor='hand2')
+        boton_salir = ttk.Button(root, text='Salir', command=self.salir, cursor='hand2')
         boton_salir.place(relx=.85, y=585, width=85, height=25)
 
     def ingresar(self):
@@ -67,7 +66,7 @@ class WinMain(Estilos):
         etiqueta_principal.place_configure(relx=0.6, y=75, anchor = CENTER, 
                                 width=333, height=50)
         self.imagen_psico = ImageTk.PhotoImage(Image.open('./imagenes/logo.png').resize((320, 270)))
-        label_imagen = tk.Label(self.root, image=self.imagen_psico, background=self.color_principal, relief = 'flat')
+        label_imagen = ttk.Label(self.root, image=self.imagen_psico, background=self.color_principal, relief = 'flat')
         label_imagen.place(relx=0.6, rely=0.5, anchor=CENTER)
         self.boton_ingresar.destroy()
         #Botones - Menú

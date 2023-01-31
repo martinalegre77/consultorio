@@ -11,7 +11,7 @@ class WinSecundaria(Estilos):
         self.root = tkinter.Toplevel()
         self.root.iconbitmap('./iconos/ico2.ico')
         self.root.title(titulo)
-        self.root.config(width=700, height=600, background=self.color_principal)
+        self.root.config(background=self.color_principal)
         self.root.style = ttk.Style()
         self.root.style.configure("TLabel", foreground="gray15", 
                                         font = "Arial 11",
@@ -21,4 +21,7 @@ class WinSecundaria(Estilos):
                                         padding = 2, 
                                         width=20, 
                                         height=25)      
-        self.root.geometry("+300+30")
+        wventana = 700
+        hventana = 600
+        vx, vy = self.valoresxy(self.root, wventana, hventana)
+        self.root.geometry(str(wventana)+"x"+str(hventana)+"+"+str(vx+50)+"+"+str(vy-20))
