@@ -160,7 +160,6 @@ class Pacientes(Botones):
         self.entry_tel.grid(row=0, column=3, padx=3, pady=10)
         label_osocial = ttk.Label(self.frame_inf, text='Obra Social:', background=self.color_principal, relief='flat')
         label_osocial.grid(row=1, column=2, padx=5, pady=10)
-        # lista_os = self.query.consultar('SELECT nombre_os FROM obra_social').fetchall()
         self.entry_osocial = ttk.Combobox(self.frame_inf, state='disable')
         self.entry_osocial.grid(row=1, column=3, padx=3, pady=10)
         label_mail = ttk.Label(self.frame_inf, text='E-mail:', background=self.color_principal, relief='flat')
@@ -187,7 +186,7 @@ class Pacientes(Botones):
             mail = self.tabla.item(self.tabla.selection())['values'][5]
             self.habilitar()
             self.entry_apellido.insert(0, apellido)
-            self.entry_apellido.focus()
+            # self.entry_apellido.focus()
             self.entry_nombre.insert(0, nombre)
             self.entry_dni.insert(0, self.dni_viejo)
             self.entry_tel.insert(0, telefono)
@@ -225,7 +224,6 @@ class Pacientes(Botones):
             dni = self.entry_dni.get()
             telefono = self.entry_tel.get()
             osocial_nueva = self.entry_osocial.get()
-            print(osocial_nueva)
             osocial = self.query.consultar(f"""SELECT id_os FROM obra_social
                                                 WHERE nombre_os='{osocial_nueva}'""").fetchall()
             osocial = osocial[0][0]
@@ -238,7 +236,6 @@ class Pacientes(Botones):
                 self.query.consultar(sql)
             else:
                 sql = 'INSERT INTO paciente VALUES(?,?,?,?,?,?)'
-                print(osocial)
                 parametros = (dni, apellido, nombre, osocial, telefono, mail)
                 self.query.consultar(sql, parametros)
             messagebox.showinfo(
@@ -269,14 +266,102 @@ class Osociales(Botones):
     def __init__(self, root, titulo):
         super().__init__(root, titulo)
         titulo2 = 'O B R A S  S O C I A L E S'
-        columnas = ['orden', 'nombre', 'monto', 'descripcion']
-        texto_columnas = ['Nro Orden', 'Nombre', 'Monto Cobertura', 'Descripción']
-        ancho_columnas = [70,120,100,310]
-        self.sql = 'SELECT * FROM obra_social ORDER BY id_os DESC'
+        columnas = ['nombre', 'monto', 'descripcion']
+        texto_columnas = ['Nombre Obra Social', 'Monto Cobertura', 'Descripción']
+        ancho_columnas = [180,100,320]
+        self.sql = 'SELECT nombre_os, monto_cob_os, descripcion_os FROM obra_social\
+                        WHERE id_os != 1 ORDER BY nombre_os DESC'
         self.mostrar_tabla(titulo2, columnas, texto_columnas, ancho_columnas, self.sql)
         # ------Interacción Ventana OBRAS SOCIALES---
+        label_nombre = ttk.Label(self.frame_inf, text='Abreviatura:', background=self.color_principal, relief='flat')
+        label_nombre.grid(row=0, column=0, padx=5, pady=10, sticky='W')
+        self.entry_nombre = ttk.Entry(self.frame_inf, state='disable')
+        self.entry_nombre.grid(row=0, column=1, padx=3, pady=10)
+        label_monto = ttk.Label(self.frame_inf, text='Monto Convenio:', background=self.color_principal, relief='flat')
+        label_monto.grid(row=0, column=2, padx=5, pady=10, sticky='W')
+        self.entry_monto = ttk.Entry(self.frame_inf, state='disable')
+        self.entry_monto.grid(row=0, column=3, padx=3, pady=10)
+        label_sep = ttk.Label(self.frame_inf, background=self.color_principal )
+        label_sep.grid(row=1, column=0)
+        label_descrip = ttk.Label(self.frame_inf, text='Descripción:', background=self.color_principal, relief='flat')
+        label_descrip.grid(row=2, column=0,padx=5, pady=10)
+        self.entry_descrip = ttk.Entry(self.frame_inf, state='disable', width=72)
+        self.entry_descrip.grid(row=2, column=1, padx=3, pady=10, columnspan=3, sticky='W')
+        self.modificacion = False
+        boton_modificar = ttk.Button(self.frame_inf, text='Modificar Datos', 
+                                padding=3, command=self.modificar, cursor='hand2')
+        boton_modificar.grid(row=4, column=0, padx=3, pady=40)
+        boton_habilitar = ttk.Button(self.frame_inf, text='Ingresar Nueva', 
+                                padding=3, command=self.habilitar, cursor='hand2')
+        boton_habilitar.grid(row=4, column=1, padx=3, pady=40)
 
-        
+    def modificar(self):
+        if self.modificacion:
+            self.borrar_entrys()
+            print('Adentro del if')
+        try:
+            self.nombre_viejo = self.tabla.item(self.tabla.selection())['values'][0]
+            nombre = self.tabla.item(self.tabla.selection())['values'][0]
+            monto = self.tabla.item(self.tabla.selection())['values'][1]
+            descripcion = self.tabla.item(self.tabla.selection())['values'][2]
+            self.habilitar()
+            self.entry_nombre.insert(0, nombre)
+            self.entry_monto.insert(0, monto)
+            self.entry_descrip.insert(0, descripcion)
+            self.modificacion = True
+        except:
+            messagebox.showwarning(
+                        title='Advertencia',
+                        message='Debe seleccionar los datos a modificar'
+                        )
+
+    def habilitar(self):
+        self.entry_nombre.config(state='normal')
+        self.entry_nombre.focus()
+        self.entry_monto.config(state='normal')
+        self.entry_descrip.config(state='normal')
+        self.boton_guardar = ttk.Button(self.frame_inf, text='Guardar', 
+                                        padding=3, command=self.guardar, cursor='hand2')
+        self.boton_guardar.grid(row=4, column=2, padx=3, pady=40)
+
+    def guardar(self):
+        if len(self.entry_nombre.get()) < 3 or self.entry_monto.get() == 0:
+            messagebox.showwarning(
+                        title='Advertencia',
+                        message='Abreviatura y Monto Convenio son campos obligatorios'
+                        )
+            self.entry_nombre.focus()  
+        else:
+            nombre = self.entry_nombre.get()
+            monto = self.entry_monto.get()
+            descripcion = self.entry_descrip.get()
+            if self.modificacion:
+                sql = f"""UPDATE obra_social SET nombre_os='{nombre}',
+                            monto_cob_os='{monto}',
+                            descripcion_os='{descripcion}' 
+                            WHERE nombre_os = '{self.nombre_viejo}'"""
+                self.query.consultar(sql)
+            else:
+                sql = f"""INSERT INTO obra_social (nombre_os, monto_cob_os, descripcion_os)
+                            VALUES ('{nombre}','{monto}', '{descripcion}')"""
+                self.query.consultar(sql)
+            messagebox.showinfo(
+                                title="Datos Obra Social",
+                                message="Los datos se guardaron correctamente."
+                                )
+            self.borrar_entrys()
+            self.tabla.delete(*self.tabla.get_children())
+            self.llenar_tabla(self.sql)
+            self.modificacion = False
+
+    def borrar_entrys(self):
+        self.entry_nombre.delete(0, tk.END) 
+        self.entry_monto.delete(0, tk.END)
+        self.entry_descrip.delete(0, tk.END)
+        self.entry_nombre.config(state='disable')
+        self.entry_monto.config(state='disable')
+        self.entry_descrip.config(state='disable')
+        self.boton_guardar.destroy()
 
 class Consultorios(Botones):
     def __init__(self, root, titulo):
@@ -309,10 +394,10 @@ class Turnos(Botones):
         columnas = ['fecha', 'hora', 'apellido', 'nombre', 'telefono', 'osocial']
         texto_columnas = ['Fecha', 'Hora', 'Apellido', 'Nombre', 'Teléfono', 'O. Social']
         ancho_columnas = [95,95,110,110,90,100]
-        self.sql = 'SELECT turnos.fecha_turno, turnos.horario_turno, turnos.apellido_pac, paciente.nombre_pac,\
-                paciente.telefono_pac, paciente.obra_social_pac FROM turnos\
-                INNER JOIN paciente ON turnos.dni_pac = paciente.dni_pac\
-                WHERE turnos.fecha_turno < DATE("now")'
+        self.sql = 'SELECT turno.fecha_turno, turno.hora_turno, paciente.apellido_pac, paciente.nombre_pac,\
+                paciente.telefono_pac, paciente.obra_social_pac FROM turno\
+                INNER JOIN paciente ON turno.dni_pac_turno = paciente.dni_pac\
+                WHERE turno.fecha_turno < DATE("now")'
         self.mostrar_tabla(titulo2, columnas, texto_columnas, ancho_columnas, self.sql)
         # ------Interacción Usuario TURNOS---
         anio = int(datetime.now().year)
