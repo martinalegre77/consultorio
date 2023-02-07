@@ -39,13 +39,11 @@ class WinMain(Estilos):
         acceso = self.ver_pass()
         self.clave = 0
         if acceso == []:
-            self.perfil()
-
-            self.ingresar()
+            first_login = Perfil('win_perfil', 'Configuración del Perfil', self.root)
         else:
             self.clave = acceso[0][0]
             self.ingresar()
-            
+
         self.cargar_widgets()
 
     def ver_pass(self):
@@ -58,7 +56,7 @@ class WinMain(Estilos):
         login = Login('win_login', 'Mi Consultorio', self.clave, self.root)
 
     def perfil(self):
-        edit_perfil = Perfil('win_perfil', 'Configuración del Perfil', self.root)
+        edit_perfil = Perfil('win_perfil', 'Modificar Datos del Perfil', self.root)
 
     def salir(self):
         if messagebox.askokcancel(

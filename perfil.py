@@ -24,6 +24,7 @@ class Perfil(WinSecundaria, Estilos):
         label_apellido.place(x=x_label, y=100)
         self.caja_apellido = ttk.Entry(self.root)
         self.caja_apellido.place(x=x_entry, y=100, width=150, height=25)
+        self.caja_apellido.focus()
         
         label_nombre = ttk.Label(self.root, text='Nombre/s:')
         label_nombre.place(x=x_label, y=150)
