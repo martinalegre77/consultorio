@@ -11,9 +11,6 @@ class Conexion():
             conn.commit()
             return resultado
 
-    # def cerrar_conexion(self):
-    #     Conexion.close()
-
     def consultar_pass(self):
         sql = 'SELECT dni FROM perfil'
         try:
@@ -31,7 +28,6 @@ class Conexion():
                     matricula_nac, matricula_prov, telefono, mail)
         self.consultar(sql, parametros)
         
-
     def crear_db(self):
         sql = 'CREATE TABLE perfil (dni INTEGER PRIMARY KEY,\
                                     apellido TEXT NOT NULL,\

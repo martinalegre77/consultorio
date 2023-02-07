@@ -7,7 +7,6 @@ from conecciones import Conexion
 from estilos import Estilos
 from tkcalendar import DateEntry
 
-
 class Botones(Estilos):
     def __init__(self, root, titulo):
         super().__init__()
@@ -186,7 +185,6 @@ class Pacientes(Botones):
             mail = self.tabla.item(self.tabla.selection())['values'][5]
             self.habilitar()
             self.entry_apellido.insert(0, apellido)
-            # self.entry_apellido.focus()
             self.entry_nombre.insert(0, nombre)
             self.entry_dni.insert(0, self.dni_viejo)
             self.entry_tel.insert(0, telefono)
@@ -228,7 +226,6 @@ class Pacientes(Botones):
                                                 WHERE nombre_os='{osocial_nueva}'""").fetchall()
             osocial = osocial[0][0]
             mail = self.entry_mail.get()
-
             if self.modificacion:
                 sql = f"""UPDATE paciente SET dni_pac='{dni}', apellido_pac='{apellido}', nombre_pac='{nombre}',
                                 obra_social_pac='{osocial}', telefono_pac='{telefono}', mail_pac='{mail}'

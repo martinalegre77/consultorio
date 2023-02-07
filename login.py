@@ -6,9 +6,10 @@ from PIL import ImageTk, Image
 from win_secundaria import WinSecundaria
 
 class Login(WinSecundaria, Estilos):
-    def __init__(self, root, titulo):
+    def __init__(self, root, titulo, clave, master):
         super().__init__(root, titulo)
-        # self.master = master
+        self.clave = clave
+        self.master = master
         self.root.resizable(0,0)
         self.imagen_psico = ImageTk.PhotoImage(Image.open('./imagenes/logo.png').resize((320, 270)))
         label_imagen = tk.Label(self.root, image=self.imagen_psico, background=self.color_principal, relief = 'flat')
@@ -27,22 +28,49 @@ class Login(WinSecundaria, Estilos):
                             relief = 'flat',
                             padding = 2)
         etiqueta_pass.place(x=220, y=500,  width=90, height=25)
-        caja_pass = ttk.Entry(self.root, show='*')
-        caja_pass.place(x=307, y=500, width=85, height=25)
-        caja_pass.config(background='white')
+        self.caja_pass = ttk.Entry(self.root, show='*')
+        self.caja_pass.place(x=307, y=500, width=85, height=25)
+        self.caja_pass.config(background='white')
         boton_ingresar = ttk.Button(self.root, text='Ingresar', command=self.ingresar)
         boton_ingresar.place(x=307, y=530, width=85, height=25)
         self.root.focus()
         self.root.grab_set()
+        self.intentos = 0
 
     def ingresar(self):
-        print('Ingresando')   
-
+        usuario = self.caja_pass.get()
+        try:
+            self.clave = str(self.clave)
+        except:
+            pass
+        if usuario == self.clave:
+            self.root.destroy()
+        else:
+            messagebox.showwarning(
+                        title='Advertencia',
+                        message='La contraseña ingresada es incorrecta'
+                        )
+            self.caja_pass.delete(0, tk.END)
+            self.caja_pass.focus()
+            self.intentos+=1
+            if self.intentos == 3:
+                messagebox.showwarning(
+                        title='3 intentos fallidos de ingreso',
+                        message='La aplicación se cerrará'
+                        )
+                try:
+                    self.master.destroy()
+                except:
+                    pass
+            
     def salir(self):
         if messagebox.askokcancel(
                         title='Advertencia',
-                        message='¿Confirma que desea salir de la ventana?'
+                        message='¿Confirma que desea abandonar la aplicación?'
                         ):
-            self.root.destroy()
+            try:
+                self.master.destroy()
+            except:
+                pass
         else:
             pass

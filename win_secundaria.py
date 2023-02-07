@@ -8,9 +8,10 @@ class WinSecundaria(Estilos):
     def __init__(self, root, titulo):
         super().__init__()
         self.root = root
-        self.root = tkinter.Toplevel()
-        self.root.iconbitmap('./iconos/ico2.ico')
-        self.root.title(titulo)
+        self.root = tkinter.Toplevel(borderwidth=5, relief='ridge')
+        # self.root.iconbitmap('./iconos/ico2.ico')
+        # self.root.title(titulo)
+        self.root.overrideredirect(True)
         self.root.config(background=self.color_principal)
         self.root.style = ttk.Style()
         self.root.style.configure("TLabel", foreground="gray15", 

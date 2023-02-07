@@ -2,8 +2,8 @@ import tkinter as tk
 from tkinter import CENTER
 from PIL import ImageTk, Image
 from tkinter import messagebox
-from turtle import bgcolor
-from botones import * # Acá estaba interaccion
+# from turtle import bgcolor
+from botones import * 
 import conecciones
 from estilos import Estilos
 from login import Login
@@ -14,15 +14,9 @@ class WinMain(Estilos):
         super().__init__()
         self.root = root
         root.resizable(0,0)
-        # wtotal = root.winfo_screenwidth()
-        # htotal = root.winfo_screenheight()
         wventana = 900
         hventana = 630
-        # pwidth = round(wtotal/2-wventana/2)
-        # pheight = round(htotal/2-(hventana)/2)
-        # self.root.geometry(str(wventana)+"x"+str(hventana)+"+"+str(pwidth)+"+"+str(pheight-30))
         vx, vy = self.valoresxy(self.root, wventana, hventana)
-        # self.root.geometry(str(wventana)+"x"+str(hventana)+"+"+xy)
         self.root.geometry(str(wventana)+"x"+str(hventana)+"+"+str(vx)+"+"+str(vy-30))
         self.root.title('Mi Consultorio')
         self.root.iconbitmap('./iconos/favicon.ico')
@@ -41,11 +35,30 @@ class WinMain(Estilos):
         boton_salir = ttk.Button(root, text='Salir', command=self.salir, cursor='hand2')
         boton_salir.place(relx=.85, y=585, width=85, height=25)
 
+        # LOGUEO
+        acceso = self.ver_pass()
+        self.clave = 0
+        if acceso == []:
+            self.perfil()
+
+            self.ingresar()
+        else:
+            self.clave = acceso[0][0]
+            self.ingresar()
+            
+        self.cargar_widgets()
+
+    def ver_pass(self):
+        query = conecciones.Conexion()
+        password = query.consultar_pass()
+        respuesta = password.fetchall()
+        return respuesta
+
     def ingresar(self):
-        login = Login('win_login', 'Mi Consultorio')
+        login = Login('win_login', 'Mi Consultorio', self.clave, self.root)
 
     def perfil(self):
-        edit_perfil = Perfil('win_perfil', 'Configuración del Perfil')
+        edit_perfil = Perfil('win_perfil', 'Configuración del Perfil', self.root)
 
     def salir(self):
         if messagebox.askokcancel(
@@ -53,8 +66,8 @@ class WinMain(Estilos):
                         message='¿Confirma que desea salir de la aplicación?'
                         ):
             root.destroy()
-        else: # Acá va pass pero pruebo los widgets
-            self.cargar_widgets()
+        else:
+            pass
 
     def cargar_widgets(self):
         etiqueta_principal = ttk.Label(text="Lic. Mariana Barrionuevo", 
@@ -109,25 +122,18 @@ if __name__=="__main__":
     root = tk.Tk()
     app = WinMain(root)
     
-query = conecciones.Conexion()
-password = query.consultar_pass()
+# query = conecciones.Conexion()
+# password = query.consultar_pass()
 
-respuesta = password.fetchall()
+# respuesta = password.fetchall()
 
-if respuesta == []:
-    first_login = Perfil('win_perfil', 'Configuración del Perfil')
-else:
-    clave = respuesta[0][0]
-    if clave < 1000:
-        first_login = Perfil('win_perfil', 'Configuración del Perfil')
-    else:
-        login = Login('win_login', 'Mi Consultorio')
-
-
+# if respuesta == []:
+#     first_login = Perfil('win_perfil', 'Configuración del Perfil')
+# else:
+#     clave = respuesta[0][0]
+#     if clave < 100000:
+#         first_login = Perfil('win_perfil', 'Configuración del Perfil')
+#     else:
+#         login = Login('win_login', 'Mi Consultorio', clave)
 
 root.mainloop()
-
-# Conexion.cerrar_conexion()
-
-# root.destroy
-# root.quit

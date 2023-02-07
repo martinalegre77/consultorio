@@ -4,12 +4,11 @@ from estilos import Estilos
 from win_secundaria import WinSecundaria
 from conecciones import Conexion
 
-# Configuracion del Perfil
-
 class Perfil(WinSecundaria, Estilos):
-    def __init__(self, root, titulo):
+    def __init__(self, root, titulo, master):
         super().__init__(root, titulo)
         self.query=Conexion()
+        self.master = master
         # Labels
         self.root.resizable(0,0) 
         label_titulo = ttk.Label(self.root, 
@@ -19,10 +18,8 @@ class Perfil(WinSecundaria, Estilos):
                 font='Arial 12 bold', 
                 relief = 'flat')
         label_titulo.place(x=120, y=50)
-
         x_label = 180
         x_entry = 370
-    
         label_apellido = ttk.Label(self.root, text='Apellido:')
         label_apellido.place(x=x_label, y=100)
         self.caja_apellido = ttk.Entry(self.root)
@@ -79,9 +76,12 @@ class Perfil(WinSecundaria, Estilos):
     def cerrar(self):
         if messagebox.askokcancel(
                         title='Advertencia',
-                        message='¿Confirma que desea cerrar la ventana?'
+                        message='¿Confirma que desea abandonar la ventana?'
                         ):
-            self.root.destroy()
+            try:
+                self.master.destroy()
+            except:
+                pass
         else:
             pass
 
