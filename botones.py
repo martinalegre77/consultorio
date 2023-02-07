@@ -74,10 +74,10 @@ class Agenda(Botones):
         columnas = ['fecha', 'hora', 'apellido', 'nombre', 'telefono', 'osocial']
         texto_columnas = ['Fecha', 'Hora', 'Apellido', 'Nombre', 'Teléfono', 'O. Social']
         ancho_columnas = [95,95,110,110,90,100]
-        self.sql = 'SELECT turnos.fecha_turno, turnos.horario_turno, turnos.apellido_pac, paciente.nombre_pac,\
-                paciente.telefono_pac, paciente.obra_social_pac FROM turnos\
-                INNER JOIN paciente ON turnos.dni_pac = paciente.dni_pac\
-                WHERE turnos.fecha_turno > DATE("now")'
+        self.sql = 'SELECT turno.fecha_turno, turno.hora_turno, paciente.apellido_pac, paciente.nombre_pac,\
+                paciente.telefono_pac, obra_social.nombre_os FROM turno\
+                INNER JOIN paciente INNER JOIN obra_social ON turno.dni_pac_turno = paciente.dni_pac\
+                WHERE turno.fecha_turno > DATE("now") AND obra_social.id_os = paciente.obra_social_pac'
         self.mostrar_tabla(titulo2, columnas, texto_columnas, ancho_columnas, self.sql)
         # ------Interacción Ventana PACIENTE---
         label_paciente = ttk.Label(self.frame_inf, text='Lista de Pacientes', background = self.color_principal, 
@@ -105,10 +105,11 @@ class Agenda(Botones):
             indice = self.listbox.curselection()
             paciente = self.listbox.get(indice)
             apellido, nombre = paciente
-            sql = f"""SELECT turnos.fecha_turno, turnos.horario_turno, turnos.apellido_pac, paciente.nombre_pac,
-                    paciente.telefono_pac, paciente.obra_social_pac FROM turnos INNER JOIN paciente 
-                    ON turnos.dni_pac = paciente.dni_pac WHERE turnos.dni_pac IN (SELECT dni_pac FROM paciente
-                    WHERE apellido_pac='{apellido}' AND nombre_pac='{nombre}')"""
+            sql = f"""SELECT turno.fecha_turno, turno.hora_turno, paciente.apellido_pac, paciente.nombre_pac,
+                    paciente.telefono_pac, obra_social.nombre_os FROM turno INNER JOIN paciente INNER JOIN obra_social
+                    ON turno.dni_pac_turno = paciente.dni_pac WHERE turno.dni_pac_turno IN (SELECT dni_pac FROM paciente
+                    WHERE apellido_pac='{apellido}' AND nombre_pac='{nombre}') 
+                    AND obra_social.id_os = paciente.obra_social_pac"""
             if self.query.consultar(sql).fetchall()==[]:
                 messagebox.showinfo(
                         title='Resultado de la consulta',
@@ -134,7 +135,11 @@ class Pacientes(Botones):
         columnas = ['dni', 'apellido', 'nombre', 'osocial', 'telefono', 'mail']
         texto_columnas = ['DNI', 'Apellido', 'Nombre', 'O. Social', 'Teléfono', 'Mail']
         ancho_columnas = [75,100,100,85,95,145]
-        self.sql = 'SELECT * FROM paciente ORDER BY apellido_pac DESC'
+        self.sql = """SELECT paciente.dni_pac, paciente.apellido_pac, paciente.nombre_pac,
+                        obra_social.nombre_os, paciente.telefono_pac, paciente.mail_pac
+                        FROM paciente INNER JOIN obra_social 
+                        WHERE paciente.obra_social_pac = obra_social.id_os
+                        ORDER BY paciente.apellido_pac DESC"""
         self.mostrar_tabla(titulo2, columnas, texto_columnas, ancho_columnas, self.sql)
         # ------Interacción Ventana PACIENTE---
         label_apellido = ttk.Label(self.frame_inf, text='Apellido:', background=self.color_principal, relief='flat')
@@ -155,13 +160,14 @@ class Pacientes(Botones):
         self.entry_tel.grid(row=0, column=3, padx=3, pady=10)
         label_osocial = ttk.Label(self.frame_inf, text='Obra Social:', background=self.color_principal, relief='flat')
         label_osocial.grid(row=1, column=2, padx=5, pady=10)
-        self.entry_osocial = ttk.Entry(self.frame_inf, state='disable')
+        # lista_os = self.query.consultar('SELECT nombre_os FROM obra_social').fetchall()
+        self.entry_osocial = ttk.Combobox(self.frame_inf, state='disable')
         self.entry_osocial.grid(row=1, column=3, padx=3, pady=10)
         label_mail = ttk.Label(self.frame_inf, text='E-mail:', background=self.color_principal, relief='flat')
         label_mail.grid(row=2, column=2, padx=5, pady=10)
         self.entry_mail = ttk.Entry(self.frame_inf, state='disable')
         self.entry_mail.grid(row=2, column=3, padx=3, pady=10)
-        self.modificacion = False
+        self.modificacion = False # Para saber si modifica o guarda nuevo 
         boton_modificar = ttk.Button(self.frame_inf, text='Modificar Paciente', 
                                 padding=3, command=self.modificar, cursor='hand2')
         boton_modificar.grid(row=4, column=0, padx=3, pady=40)
@@ -170,6 +176,8 @@ class Pacientes(Botones):
         boton_habilitar.grid(row=4, column=1, padx=3, pady=40)
 
     def modificar(self):
+        if self.modificacion:
+            self.borrar_entrys()
         try:
             self.dni_viejo = self.tabla.item(self.tabla.selection())['values'][0]
             apellido = self.tabla.item(self.tabla.selection())['values'][1]
@@ -198,7 +206,7 @@ class Pacientes(Botones):
         self.entry_nombre.config(state='normal')
         self.entry_dni.config(state='normal')
         self.entry_tel.config(state='normal')
-        self.entry_osocial.config(state='normal')
+        self.entry_osocial.config(state='normal', values=self.query.consultar('SELECT nombre_os FROM obra_social').fetchall())
         self.entry_mail.config(state='normal')
         self.boton_guardar = ttk.Button(self.frame_inf, text='Guardar datos', 
                                         padding=3, command=self.guardar_datos, cursor='hand2')
@@ -216,15 +224,21 @@ class Pacientes(Botones):
             nombre = self.entry_nombre.get()
             dni = self.entry_dni.get()
             telefono = self.entry_tel.get()
-            osocial = self.entry_osocial.get()
+            osocial_nueva = self.entry_osocial.get()
+            print(osocial_nueva)
+            osocial = self.query.consultar(f"""SELECT id_os FROM obra_social
+                                                WHERE nombre_os='{osocial_nueva}'""").fetchall()
+            osocial = osocial[0][0]
             mail = self.entry_mail.get()
+
             if self.modificacion:
-                sql = f"""UPDATE paciente SET dni_pac='{dni}', apellido_pac='{apellido}', nombre_pac='{nombre}',\
-                                obra_social_pac='{osocial}', telefono_pac='{telefono}', mail_pac='{mail}'\
-                                    WHERE dni_pac = '{self.dni_viejo}'"""
+                sql = f"""UPDATE paciente SET dni_pac='{dni}', apellido_pac='{apellido}', nombre_pac='{nombre}',
+                                obra_social_pac='{osocial}', telefono_pac='{telefono}', mail_pac='{mail}'
+                                WHERE dni_pac = '{self.dni_viejo}'"""
                 self.query.consultar(sql)
             else:
                 sql = 'INSERT INTO paciente VALUES(?,?,?,?,?,?)'
+                print(osocial)
                 parametros = (dni, apellido, nombre, osocial, telefono, mail)
                 self.query.consultar(sql, parametros)
             messagebox.showinfo(
@@ -258,8 +272,11 @@ class Osociales(Botones):
         columnas = ['orden', 'nombre', 'monto', 'descripcion']
         texto_columnas = ['Nro Orden', 'Nombre', 'Monto Cobertura', 'Descripción']
         ancho_columnas = [70,120,100,310]
-        self.sql = 'SELECT * FROM obras_sociales'
+        self.sql = 'SELECT * FROM obra_social ORDER BY id_os DESC'
         self.mostrar_tabla(titulo2, columnas, texto_columnas, ancho_columnas, self.sql)
+        # ------Interacción Ventana OBRAS SOCIALES---
+
+        
 
 class Consultorios(Botones):
     def __init__(self, root, titulo):
@@ -268,7 +285,7 @@ class Consultorios(Botones):
         columnas = ['nombre', 'direccion', 'telefono']
         texto_columnas = ['Nombre', 'Dirección', 'Teléfono']
         ancho_columnas = [300,150,150]
-        self.sql = 'SELECT nombre_cons, direccion_cons, telefono_cons FROM consultorios'
+        self.sql = 'SELECT nombre_cons, direccion_cons, telefono_cons FROM consultorio'
         self.mostrar_tabla(titulo2, columnas, texto_columnas, ancho_columnas, self.sql)
 
 class Cobros(Botones):
@@ -278,10 +295,11 @@ class Cobros(Botones):
         columnas = ['apellido', 'dni', 'monto', 'fecha', 'tipo']
         texto_columnas = ['Apellido', 'DNI', 'Importe', 'Fecha del cobro', 'Forma de pago']
         ancho_columnas = [150,100,100,100,150]
-        self.sql = 'SELECT paciente.apellido_pac, cobros.dni_pac, cobros.monto, cobros.fecha_cobro, cobros.tipo\
+        self.sql = 'SELECT paciente.apellido_pac, cobro.dni_pac_cob, cobro.monto_cob,\
+                    cobro.fecha_cob, cobro.descripcion_cob\
                 FROM paciente\
-                INNER JOIN cobros\
-                ON paciente.dni_pac = cobros.dni_pac'
+                INNER JOIN cobro\
+                ON paciente.dni_pac = cobro.dni_pac_cob'
         self.mostrar_tabla(titulo2, columnas, texto_columnas, ancho_columnas, self.sql)
 
 class Turnos(Botones):

@@ -111,6 +111,7 @@ if __name__=="__main__":
     
 query = conecciones.Conexion()
 password = query.consultar_pass()
+
 respuesta = password.fetchall()
 
 if respuesta == []:
